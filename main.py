@@ -1,0 +1,21 @@
+import graph
+
+G = graph.Graph(12)
+G.addEdge(0,1,12)
+G.addEdge(0,2,23)
+G.addEdge(0,3,5)
+G.addEdge(1,5,7)
+G.addEdge(2,3,18)
+G.addEdge(2,4,17)
+G.addEdge(3,5,10)
+G.addEdge(3,6,9)
+G.addEdge(4,8,16)
+G.addEdge(4,9,14)
+G.addEdge(5,11,20)
+G.addEdge(6,7,4)
+G.addEdge(6,9,3)
+G.addEdge(7,11,8)
+G.addEdge(8,10,7)
+G.addEdge(10,11,12)
+
+G.print()
