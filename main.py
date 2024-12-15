@@ -1,5 +1,5 @@
 from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST
-from collections import deque
+import graph
 
 G = {
     'V': list(range(12)),
@@ -47,29 +47,5 @@ def MST_PRIM(G, W):
     MST = BUILD_MST(P, key, n)
     return MST
 
-def BFS(G, s):
-    n = len(G.adjList)
-    visited = [False] * n
-    d = [float('inf')] * n
-    p = [None] * n
-    visited[s] = True
-    d[s] = 0
-    Q = deque()
-    Q.append(s)
-    while len(Q) != 0:
-        u = Q.popleft()
-        node = G.adjList[u]
-        while node:
-            v = node.value
-            if not visited[v]:
-                visited[v] = True
-                d[v] = d[u] + 1
-                p[v] = u
-                Q.append(v)
-            node = node.next
-    return d, p
-
 MST = MST_PRIM(G, weightFunction)
-MST.print()
-
-distances, parents = BFS(MST, 0)
+# MST.print()

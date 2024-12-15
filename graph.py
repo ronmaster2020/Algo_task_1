@@ -1,4 +1,5 @@
 import heapq
+from collections import deque
 class Node:
     def __init__(self, value, weight):
         self.value = value
@@ -29,6 +30,39 @@ class AdjList:
                 print(f" -> {neighborLabel}(w: {temp.weight})", end="")
                 temp = temp.next
             print()
+    
+    def BFS(self, s):
+        # init
+        n = len(self.adjList)
+        visited = [False] * n
+        d = [float('inf')] * n
+        p = [None] * n
+        visited[s] = True
+        d[s] = 0
+        Q = deque()
+        Q.append(s)
+        # end of init
+
+        while len(Q) != 0:
+            u = Q.popleft()
+            node = self.adjList[u]
+            while node:
+                v = node.value
+                if not visited[v]:
+                    visited[v] = True
+                    d[v] = d[u] + 1
+                    p[v] = u
+                    Q.append(v)
+                node = node.next
+        return d, p
+    
+    @staticmethod
+    def BFS_PRINT(d, p):
+        # for index 0 where the vertex doesn't have a parent:
+        print(f"a ({d[0]}) <- {p[0]}")
+        # for the rest
+        for parent in range(1,len(p)):
+            print(f"{chr(parent + ord('a'))} ({d[parent]}) <- {chr(p[parent] + ord('a'))}")
 
 # Time complexities:
 # init - O(n)
