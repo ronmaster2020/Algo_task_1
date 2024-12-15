@@ -1,21 +1,20 @@
 import heapq
 from collections import deque
 class Node:
-    def __init__(self, value, weight):
+    def __init__(self, value):
         self.value = value
-        self.weight = weight
         self.next = None
 
 class AdjList:
     def __init__(self, numVertices):
         self.adjList = [None] * numVertices
 
-    def addEdge(self, src, dest, weight):
-        newNode = Node(dest, weight)
+    def addEdge(self, src, dest):
+        newNode = Node(dest)
         newNode.next = self.adjList[src]
         self.adjList[src] = newNode
 
-        newNode = Node(src, weight)
+        newNode = Node(src)
         newNode.next = self.adjList[dest]
         self.adjList[dest] = newNode
 
@@ -27,7 +26,7 @@ class AdjList:
             temp = self.adjList[i]
             while temp:
                 neighborLabel = chr(temp.value + ord('a')) if 0 <= temp.value < 26 else str(temp.value)
-                print(f" -> {neighborLabel}(w: {temp.weight})", end="")
+                print(f" -> {neighborLabel}", end="")
                 temp = temp.next
             print()
     

@@ -1,6 +1,6 @@
 import graph
 
-def PRIM_INIT(G, W):
+def PRIM_INIT(G):
     V = G['V']
     E = G['E']
 
@@ -8,10 +8,9 @@ def PRIM_INIT(G, W):
     # init adj list
     Adj = graph.AdjList(n)
     for e in E:
-        src = e[0]
-        dest = e[1]
-        weight = W(e)
-        Adj.addEdge(src, dest, weight)
+        v = e[0]
+        u = e[1]
+        Adj.addEdge(v, u)
 
     # init min heap
     minHeap = graph.MinHeap()
@@ -29,9 +28,9 @@ def PRIM_INIT(G, W):
 def EXTRACT_MIN(Q):
     return (Q.pop())[1]
 
-def BUILD_MST(P, key, n):
+def BUILD_MST(P, n):
     MST = graph.AdjList(n)
     for v in range(0, n):
         if P[v] is not None:
-            MST.addEdge(P[v], v, key[v])
+            MST.addEdge(P[v], v)
     return MST
