@@ -31,7 +31,7 @@ def EXTRACT_MIN(Q):
 
 def BUILD_MST(P, key, n):
     MST = graph.AdjList(n)
-    for v in range(0, n-1):
+    for v in range(0, n):
         if P[v] is not None:
             MST.addEdge(P[v], v, key[v])
     return MST
