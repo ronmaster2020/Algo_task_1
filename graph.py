@@ -84,8 +84,8 @@ class AdjList:
 # *** we assume that n = |V|, and m = |E|
 # init - O(n)
 # addEdge - O(1)
-# removeEdge - O(deg(vertex)) =< O(n)
-# _removeEdge - O(deg(vertex)) =< O(n)
+# removeEdge - O(deg(vertex)) <= O(n)
+# _removeEdge - O(deg(vertex)) <= O(n)
 # print - O(n + m)
 # BFS - O(n + m)
 # BFS_PRINT - O(n)

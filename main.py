@@ -1,5 +1,4 @@
 from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST
-import graph
 
 G = {
     'V': list(range(12)),
@@ -42,6 +41,7 @@ W = {
     (10, 11): 12
 }
 
+# Time Complexity: O(m*logn)
 def MST_PRIM(G, W):
     Adj, Q, key, P, n = PRIM_INIT(G)
 
@@ -65,19 +65,21 @@ def MST_PRIM(G, W):
     MST = BUILD_MST(P, n)
     return MST
 
-MST = MST_PRIM(G, W)
-# MST.print()
-
+# Time Complexity: O(n) = 3O(n) + O(1)
 def Q2_FIND_NEW_MST(MST, W, e, w):
+    # O(1)
     max = w
     edge = e
     v = e[0]
     u = e[1]
-    D,P = MST.BFS(v)
+
+    # O(n + m) = O(n)
+    # explanation: m <= n-1, therefore the time complexity = O(n + m) <= O(2n -1), and O(2n - 1) = O(n)
+    _,P = MST.BFS(v)
     if P[u] == None:
         raise ValueError("Invalid MST")
-    graph.AdjList.BFS_PRINT(D, P)
     
+    # O(n)
     temp = u
     while temp != v:
         if P[temp] == None:
@@ -90,8 +92,12 @@ def Q2_FIND_NEW_MST(MST, W, e, w):
     if edge == e:
         return MST
     MST.addEdge(v, u)
+
+    # O(deg(edge[0]) + deg(edge[1])) <= O(n)
     MST.removeEdge(edge[0], edge[1])
     return MST
 
-newMST = Q2_FIND_NEW_MST(MST, W, (5, 7), 3)
-# newMST.print()
+MST = MST_PRIM(G, W)
+# MST.print()
+Q2_FIND_NEW_MST(MST, W, (5, 7), 3)
+# MST.print()
