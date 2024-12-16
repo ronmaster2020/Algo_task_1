@@ -45,6 +45,19 @@ class AdjList:
                 print(f" -> {neighborLabel}", end="")
                 temp = temp.next
             print()
+
+    def printAndWeights(self, W):
+        print("Graph is represented by Adjacency List And Weights:")
+        for i in range(len(self.adjList)):
+            vertexLabel = chr(i + ord('a')) if 0 <= i < 26 else str(i)
+            print(f"{vertexLabel}:", end="")
+            temp = self.adjList[i]
+            while temp:
+                neighborLabel = chr(temp.value + ord('a')) if 0 <= temp.value < 26 else str(temp.value)
+                weight = W.get((i, temp.value), W.get((temp.value, i)))
+                print(f" -> {neighborLabel} (w:{weight})", end="")
+                temp = temp.next
+            print()
     
     def BFS(self, s):
         # init
@@ -87,6 +100,7 @@ class AdjList:
 # removeEdge - O(deg(vertex)) <= O(n)
 # _removeEdge - O(deg(vertex)) <= O(n)
 # print - O(n + m)
+# printAndWeights - O(n + m)
 # BFS - O(n + m)
 # BFS_PRINT - O(n)
 
