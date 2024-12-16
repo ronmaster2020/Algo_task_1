@@ -90,7 +90,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
     while totalEdgesAdded < maxM:
         v = random.choice(V)
 
-        # find list of available edges to add to vertex v
+        # find list of available edges to connect to vertex v
         neighbors = set()
         node = G.adjList[v]
         while node:
