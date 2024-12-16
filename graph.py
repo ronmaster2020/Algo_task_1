@@ -81,9 +81,14 @@ class AdjList:
                 print(f"{chr(parent + ord('a'))} ({d[parent]}) <- {chr(p[parent] + ord('a'))}")
 
 # Time complexities:
+# *** we assume that n = |V|, and m = |E|
 # init - O(n)
 # addEdge - O(1)
+# removeEdge - O(deg(vertex)) =< O(n)
+# _removeEdge - O(deg(vertex)) =< O(n)
 # print - O(n + m)
+# BFS - O(n + m)
+# BFS_PRINT - O(n)
 
 class MinHeap:
     def __init__(self):
@@ -114,6 +119,7 @@ class MinHeap:
         return vertex in self.position
 
 # Time complexities:
+# *** we assume that n = |V|, and m = |E|
 # init - O(1)
 # push - O(logn)
 # pop - O(logn)
