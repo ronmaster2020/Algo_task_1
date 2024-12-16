@@ -1,4 +1,4 @@
-from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS
+from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES
 import random
 import graph
 from collections import deque
@@ -88,40 +88,36 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
     totalEdgesAdded = n - 1
     fullV = set()
     while totalEdgesAdded < maxM:
-        v = random.choice(V)
+        availableV = set(V) - fullV
+        v = random.choice(list(availableV))
 
         # find list of available edges to connect to vertex v
-        neighbors = set()
-        node = G.adjList[v]
-        while node:
-            neighbors.add(node.value)
-            node = node.next
-
-        available = set(V) - {v} - neighbors
-
-        if available:
-            # add randomely availabe edges
-            numEdgesToAdd = random.randint(1, min(len(available), maxM - totalEdgesAdded))
-            for _ in range(numEdgesToAdd):
-                u = random.choice(list(available))
-                G.addEdge(u, v)
-                W[(u, v)] = weightsList.pop()
-                available.remove(u)
-                totalEdgesAdded += 1
-                if totalEdgesAdded == maxM:
-                    return G, W
-        else:
+        availableEdges = GET_AVAILABLE_EDGES(G, v, V)
+        if not availableEdges:
             fullV.add(v)
             if fullV == set(V):
                 break
-    return G, W
+            continue
 
-# MST = MST_PRIM(G, W)
-# MST.print()
-# Q2_FIND_NEW_MST(MST, W, (5, 7), 3)
-# MST.print()
+        # add randomely availabe edges
+        numEdgesToAdd = random.randint(1, min(len(availableEdges), maxM - totalEdgesAdded))
+        for _ in range(numEdgesToAdd):
+            e = random.choice(list(availableEdges))
+            G.addEdge(*e) # unpack the tuple e
+            W[e] = weightsList.pop()
+            availableEdges.remove(e)
+            totalEdgesAdded += 1
+            if totalEdgesAdded == maxM:
+                return G, W
+    return G, W
 
 G, W = GENERATE_GRAPH_WITH_WEIGHTS(5, 8)
 G.printAndWeights(W)
 MST = MST_PRIM(G, W)
 MST.printAndWeights(W)
+
+
+# find vertex whose deg[v] < n-1, which means there could be another edge (u, v)
+# go over the weights of edges (Ai, v)
+# for 3.2. you add an edge (u,v) with weight > max of deg[v]
+# for 3.3. you add an edge (u,v) with weight = min - 1, of deg[v]

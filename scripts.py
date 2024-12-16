@@ -28,3 +28,20 @@ def BUILD_MST(P, n):
 def GENERATE_WEIGHTS(n):
     weights = [random.randint(-100, 100) for _ in range(n)]
     return weights
+
+def GET_AVAILABLE_EDGES(G, v, V):
+    neighbors = set()
+    node = G.adjList[v]
+    while node:
+        neighbors.add(node.value)
+        node = node.next
+
+    available = set(V) - {v} - neighbors
+
+    if not available: return None
+
+    availableEdges = set()
+    for u in available:
+        availableEdges.add((u, v))
+
+    return availableEdges
