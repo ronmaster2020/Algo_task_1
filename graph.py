@@ -8,6 +8,7 @@ class Node:
 class AdjList:
     def __init__(self, numVertices):
         self.adjList = [None] * numVertices
+        self.numVertices = numVertices
 
     def addEdge(self, src, dest):
         newNode = Node(dest)
