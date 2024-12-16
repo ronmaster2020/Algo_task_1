@@ -68,23 +68,30 @@ def MST_PRIM(G, W):
 MST = MST_PRIM(G, W)
 # MST.print()
 
-# def Q2_FIND_NEW_MST(MST, e, w):
+def Q2_FIND_NEW_MST(MST, W, e, w):
+    max = w
+    edge = e
+    v = e[0]
+    u = e[1]
+    D,P = MST.BFS(v)
+    if P[u] == None:
+        raise ValueError("Invalid MST")
+    graph.AdjList.BFS_PRINT(D, P)
+    
+    temp = u
+    while temp != v:
+        if P[temp] == None:
+            raise ValueError("Invalid MST")
+        weight = W.get((temp, P[temp]), W.get((P[temp], temp)))
+        if weight > max:
+            max = weight
+            edge = (temp, P[temp])
+        temp = P[temp]
+    if edge == e:
+        return MST
+    MST.addEdge(v, u)
+    MST.removeEdge(edge[0], edge[1])
+    return MST
 
-
-#     src = e[0]
-#     dest = e[1]
-#     _,P = MST.BFS(src)
-#     W = None
-#     node = MST.adjList[P[dest]]
-#     max = float('-inf')
-#     while node:
-#         v = node.value
-#         w = node.weight
-#         if node.weight > max:
-#             max = node.weight
-#         node = node.next
-
-#     if W == None:
-#         raise KeyError("Not an MST")
-
-# Q2_FIND_NEW_MST(MST, (5, 7), 3)
+newMST = Q2_FIND_NEW_MST(MST, W, (5, 7), 3)
+# newMST.print()

@@ -18,6 +18,22 @@ class AdjList:
         newNode.next = self.adjList[dest]
         self.adjList[dest] = newNode
 
+    def removeEdge(self, src, dest):
+        self.adjList[src] = self._removeNode(self.adjList[src], dest)
+        self.adjList[dest] = self._removeNode(self.adjList[dest], src)
+        
+    def _removeNode(self, head, value):
+        # Helper function to remove a node with the given value from the linked list
+        dummy = Node(0)
+        dummy.next = head
+        prev, curr = dummy, head
+        while curr:
+            if curr.value == value:
+                prev.next = curr.next
+                break
+            prev, curr = curr, curr.next
+        return dummy.next
+
     def print(self):
         print("Graph is represented by Adjacency List:")
         for i in range(len(self.adjList)):
@@ -57,11 +73,12 @@ class AdjList:
     
     @staticmethod
     def BFS_PRINT(d, p):
-        # for index 0 where the vertex doesn't have a parent:
-        print(f"a ({d[0]}) <- {p[0]}")
         # for the rest
         for parent in range(1,len(p)):
-            print(f"{chr(parent + ord('a'))} ({d[parent]}) <- {chr(p[parent] + ord('a'))}")
+            if p[parent] == None:
+                print(f"{chr(parent + ord('a'))} (0) <- None")
+            else:
+                print(f"{chr(parent + ord('a'))} ({d[parent]}) <- {chr(p[parent] + ord('a'))}")
 
 # Time complexities:
 # init - O(n)
