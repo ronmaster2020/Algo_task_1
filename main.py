@@ -1,9 +1,9 @@
-from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES
+from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES, GET_SHORTEST_PATH
 import random
 import graph
 from collections import deque
 
-# Time Complexity: O(m*logn)
+# Time Complexity: O((m+n)*logn) = O(mlogn) because m >= n-1, therefor O(m+n) = O(m) 
 def MST_PRIM(G, W):
     n = G.numVertices
     Q, key, P= PRIM_INIT(n)
@@ -28,36 +28,46 @@ def MST_PRIM(G, W):
     MST = BUILD_MST(P, n)
     return MST
 
-# Time Complexity: O(n) = 3O(n) + O(1)
+# Time Complexity: O(n) (= 3O(n) + O(1))
+# explanation:
+# (u,v) in a MST completes a circle with the shortest path from u to v, therefore
+# We want to extract from the circle the edge with the highest weight, in order to get the new MST
 def Q2_FIND_NEW_MST(MST, W, e, w):
-    # O(1)
-    max = w
-    edge = e
+    # 1. init
+    # Time Complexity: O(1)
     v = e[0]
     u = e[1]
 
-    # O(n + m) = O(n)
+    # 2. perform BFS
+    # Time Complexity: O(n + m) = O(n)
     # explanation: m <= n-1, therefore the time complexity = O(n + m) <= O(2n -1), and O(2n - 1) = O(n)
     _,P = MST.BFS(v)
     if P[u] == None:
         raise ValueError("Invalid MST")
     
-    # O(n)
-    temp = u
-    while temp != v:
-        if P[temp] == None:
-            raise ValueError("Invalid MST")
-        weight = W.get((temp, P[temp]), W.get((P[temp], temp)))
+
+    # 3. get the shortest path between u and v
+    # Time Complexity: O(n)
+    shortestPath = GET_SHORTEST_PATH(MST, u, v)
+
+    # 4. find the edge with the highest weight in the circle 
+    # Time Complexity: O(n - 1) = O(n)
+    max = w
+    edge = e
+    for e in shortestPath:
+        weight = W.get((e[0], e[1]), W.get(e[0], e[1]))
         if weight > max:
             max = weight
-            edge = (temp, P[temp])
-        temp = P[temp]
-    if edge == e:
+            edge = e
+
+    # 5. extract the edge with the highest weight in the circle
+    # Time Complexity: O(deg(edge[0]) + deg(edge[1])) less or equal O(n)
+    if (edge == (u, v)):
         return MST
     MST.addEdge(v, u)
-
-    # O(deg(edge[0]) + deg(edge[1])) <= O(n)
     MST.removeEdge(edge[0], edge[1])
+
+    # 6. return the new MST
     return MST
 
 # the Graph must be connected, and undirected (לא מכוון וקשיר)
@@ -111,11 +121,12 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
                 return G, W
     return G, W
 
-G, W = GENERATE_GRAPH_WITH_WEIGHTS(5, 8)
+G, W = GENERATE_GRAPH_WITH_WEIGHTS(10, 16)
 G.printAndWeights(W)
 MST = MST_PRIM(G, W)
 MST.printAndWeights(W)
 
+# REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})
 
 # find vertex whose deg[v] < n-1, which means there could be another edge (u, v)
 # go over the weights of edges (Ai, v)
