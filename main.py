@@ -3,7 +3,7 @@ import random
 import graph
 from collections import deque
 
-# Time Complexity: O((m+n)*logn) = O(mlogn) because m >= n-1, therefor O(m+n) = O(m) 
+# Time Complexity: O(mlogn)
 def MST_PRIM(G, W):
     n = G.numVertices
     Q, key, P= PRIM_INIT(n)
@@ -38,20 +38,14 @@ def Q2_FIND_NEW_MST(MST, W, e, w):
     v = e[0]
     u = e[1]
 
-    # 2. perform BFS
-    # Time Complexity: O(n + m) = O(n)
-    # explanation: m <= n-1, therefore the time complexity = O(n + m) <= O(2n -1), and O(2n - 1) = O(n)
-    _,P = MST.BFS(v)
-    if P[u] == None:
-        raise ValueError("Invalid MST")
-    
-
-    # 3. get the shortest path between u and v
+    # 2. get the shortest path between u and v
     # Time Complexity: O(n)
+    # explanation: m = n-1 in MST, therefore the time complexity = O(n + m) = O(2n - 1) = O(n)
     shortestPath = GET_SHORTEST_PATH(MST, u, v)
 
-    # 4. find the edge with the highest weight in the circle 
-    # Time Complexity: O(n - 1) = O(n)
+    # 3. find the edge with the highest weight in the circle 
+    # Time Complexity: O(n)
+    # explanation: O(|shortestPath|) = O(n-1) = O(n)
     max = w
     edge = e
     for e in shortestPath:
@@ -60,14 +54,14 @@ def Q2_FIND_NEW_MST(MST, W, e, w):
             max = weight
             edge = e
 
-    # 5. extract the edge with the highest weight in the circle
+    # 4. extract the edge with the highest weight in the circle
     # Time Complexity: O(deg(edge[0]) + deg(edge[1])) less or equal O(n)
     if (edge == (u, v)):
         return MST
-    MST.addEdge(v, u)
-    MST.removeEdge(edge[0], edge[1])
+    MST.addEdge(v, u)     # O(1)
+    MST.removeEdge(edge[0], edge[1])    # O(deg(edge[0]) + deg(edge[1]))
 
-    # 6. return the new MST
+    # 5. return the new MST
     return MST
 
 # the Graph must be connected, and undirected (לא מכוון וקשיר)
