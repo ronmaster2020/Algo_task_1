@@ -55,7 +55,7 @@ class AdjList:
             temp = self.adjList[i]
             while temp:
                 neighborLabel = chr(temp.value + ord('a')) if 0 <= temp.value < 26 else str(temp.value)
-                weight = W.get((i, temp.value), W.get((temp.value, i)))
+                weight = W(i, temp.value)
                 print(f" -> {neighborLabel} (w:{weight})", end="")
                 temp = temp.next
             print()
@@ -158,3 +158,8 @@ class WeightsFucntion:
     
     def __call__(self, u, v):
         return self.W.get((u, v), self.W.get((v, u)))
+    
+    def copy(self):
+        newWeights = WeightsFucntion()
+        newWeights.W = self.W.copy()
+        return newWeights

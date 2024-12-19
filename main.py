@@ -15,7 +15,7 @@ def MST_PRIM(G, W):
         while node:
             v = node.value
             # the graph is undirected (לא מכוון), so we check for both orders
-            w = W.get((u, v), W.get((v, u)))
+            w = W(u, v)
 
             if Q.exists(v) and w < key[v]:
                 key[v] = w
@@ -48,7 +48,7 @@ def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     max = w
     edge = newEdge
     for e in shortestPath:
-        weight = W.get((e[0], e[1]), W.get((e[1], e[0])))
+        weight = W(e[0], e[1])
         if weight > max:
             max = weight
             edge = e
@@ -70,7 +70,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
     n = random.randint(minN, maxN)
     maxM = random.randint(n-1, n*(n-1)//2)
     weightsList = GENERATE_WEIGHTS(maxM)
-    W = {}
+    W = graph.WeightsFucntion()
 
     # generate vertices - O(n)
     V = list(range(n))
@@ -85,7 +85,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         u = random.choice(connected)
         v = random.choice(list(remaining))
         Adj.addEdge(u, v)
-        W[(u, v)] = weightsList.pop()
+        W.addEdge(u, v, weightsList.pop())
         connected.append(v)
         remaining.remove(v)
 
@@ -109,7 +109,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         for _ in range(numEdgesToAdd):
             e = random.choice(list(availableEdges))
             Adj.addEdge(*e) # unpack the tuple e
-            W[e] = weightsList.pop()
+            W.addEdge(e[0], e[1], weightsList.pop())
             availableEdges.remove(e)
             totalEdgesAdded += 1
             if totalEdgesAdded == maxM:
@@ -147,20 +147,20 @@ if len(fullV) >= len(V):
 path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
 
 # find the max in the shortest path
-maxWeight = max(W.get((e[0], e[1]), W.get((e[1], e[0]))) for e in path)
+maxWeight = max(W(e[0], e[1]) for e in path)
 
 # for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
 print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight + 1)
 Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight + 1)
-updatedW = W.copy()
-updatedW[newEdge] = maxWeight + 1
+updatedW = W
+updatedW.addEdge(newEdge[0], newEdge[1], maxWeight + 1)
 Q3_NO.printAndWeights(updatedW)
 print()
 # for change the MST choose the weight for edge to be max minus 1 (less than max)
 print(f"new edge that has effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight - 1)
 Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight - 1)
 updatedW = W.copy()
-updatedW[newEdge] = maxWeight - 1
+updatedW.addEdge(newEdge[0], newEdge[1], maxWeight - 1)
 Q3_YES.printAndWeights(updatedW)
 
 # REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})
