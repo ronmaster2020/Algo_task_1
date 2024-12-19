@@ -42,7 +42,8 @@ def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     # 2. get the shortest path between u and v
     # Time Complexity: O(n)
     # explanation: m = n-1 in MST, therefore the time complexity = O(n + m) = O(2n - 1) = O(n)
-    shortestPath = GET_SHORTEST_PATH(MST, u, v)
+    MST_Adj = MAKE_ADJ(MST)
+    shortestPath = GET_SHORTEST_PATH(MST_Adj, u, v)
 
     # 3. find the edge with the highest weight in the circle 
     # Time Complexity: O(n)
