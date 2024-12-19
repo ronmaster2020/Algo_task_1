@@ -6,7 +6,7 @@ import copy
 # The main execution:
 def main():
     # SAIF 1:
-    G, W = GENERATE_GRAPH_WITH_WEIGHTS(3, 10)
+    G, W = GENERATE_GRAPH_WITH_WEIGHTS(20, 26)
     Adj = MAKE_ADJ(G)
     Adj.printAndWeights(W)
 
