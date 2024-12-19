@@ -3,71 +3,61 @@ import random
 import graph
 import copy
 
-# Function Declarations
-def MST_PRIM(G, W):
-    pass
-
-def Q2_FIND_NEW_MST(MST, W, newEdge, w):
-    pass
-
-def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
-    pass
-
 # The main execution:
+def main():
+    # SAIF 1:
+    G, W = GENERATE_GRAPH_WITH_WEIGHTS(3, 10)
+    Adj = MAKE_ADJ(G)
+    Adj.printAndWeights(W)
 
-# SAIF 1:
-G, W = GENERATE_GRAPH_WITH_WEIGHTS(3, 10)
-Adj = MAKE_ADJ(G)
-Adj.printAndWeights(W)
+    # SAIF 2:
+    MST = MST_PRIM(G, W)
+    print("MST graph:")
+    MST_Adj = MAKE_ADJ(MST)
+    MST_Adj.printAndWeights(W)
 
-# SAIF 2:
-MST = MST_PRIM(G, W)
-print("MST graph:")
-MST_Adj = MAKE_ADJ(MST)
-MST_Adj.printAndWeights(W)
+    # SAIF 3:
+    # 1. find an available edge to add, in the graph
+    newEdge = None
+    V = G['V']
+    n = len(V)
+    for v in range(n):
+        availableEdges = GET_AVAILABLE_EDGES(Adj, v, V)
+        if not availableEdges:
+            continue
+        newEdge = availableEdges.pop()
+        break
 
-# SAIF 3:
-# 1. find an available edge to add, in the graph
-newEdge = None
-V = G['V']
-n = len(V)
-for v in range(n):
-    availableEdges = GET_AVAILABLE_EDGES(Adj, v, V)
-    if not availableEdges:
-        continue
-    newEdge = availableEdges.pop()
-    break
+    if not newEdge:
+        raise Exception("The graph if full, no available edges to add.")
 
-if not newEdge:
-    raise Exception("The graph if full, no available edges to add.")
+    # 2. get the shortest path
+    shortestPath = GET_SHORTEST_PATH(MST, *newEdge)
 
-# 2. get the shortest path
-shortestPath = GET_SHORTEST_PATH(MST, *newEdge)
+    # 3. find the max in the shortest path
+    maxWeight = max(W(*edge) for edge in shortestPath)
 
-# 3. find the max in the shortest path
-maxWeight = max(W(*edge) for edge in shortestPath)
+    # 4. the final step splits into two requests:
 
-# 4. the final step splits into two requests:
+    # קשת הלא משנה את העץ הפורס המינימלי
+    # for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
+    newWeight = maxWeight + 1
+    print(f"new edge that has NO effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", newWeight)
+    Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, newWeight)
+    updatedW = W
+    updatedW.addEdge(newEdge, newWeight)
+    Q3_NO_Adj = MAKE_ADJ(Q3_NO)
+    Q3_NO_Adj.printAndWeights(updatedW)
 
-# קשת הלא משנה את העץ הפורס המינימלי
-# for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
-newWeight = maxWeight + 1
-print(f"new edge that has NO effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", newWeight)
-Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, newWeight)
-updatedW = W
-updatedW.addEdge(newEdge, newWeight)
-Q3_NO_Adj = MAKE_ADJ(Q3_NO)
-Q3_NO_Adj.printAndWeights(updatedW)
-
-# קשת המשנה את העץ הפורס המינימלי
-# for change the MST choose the weight for edge to be max minus 1 (less than max)
-newWeight = maxWeight - 1
-print(f"new edge that has effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", newWeight)
-Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, newWeight)
-updatedW = W
-updatedW.addEdge(newEdge, newWeight)
-Q3_YES_Adj = MAKE_ADJ(Q3_YES)
-Q3_YES_Adj.printAndWeights(updatedW)
+    # קשת המשנה את העץ הפורס המינימלי
+    # for change the MST choose the weight for edge to be max minus 1 (less than max)
+    newWeight = maxWeight - 1
+    print(f"new edge that has effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", newWeight)
+    Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, newWeight)
+    updatedW = W
+    updatedW.addEdge(newEdge, newWeight)
+    Q3_YES_Adj = MAKE_ADJ(Q3_YES)
+    Q3_YES_Adj.printAndWeights(updatedW)
 
 
 # |-------------------------------------------------------|
@@ -179,3 +169,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         'E': E
     }
     return G, W
+
+
+if __name__ == '__main__':
+    main()
