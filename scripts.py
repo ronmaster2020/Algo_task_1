@@ -29,9 +29,9 @@ def BUILD_MST(P, n):
             MST.addEdge(P[v], v)
     return MST
 
-# O(n)
-def GENERATE_WEIGHTS(n):
-    weights = [random.randint(-100, 100) for _ in range(n)]
+# O(m)
+def GENERATE_WEIGHTS(m):
+    weights = [random.randint(-100, 100) for _ in range(m)]
     return weights
 
 # O(n)

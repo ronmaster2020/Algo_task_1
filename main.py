@@ -1,7 +1,6 @@
 from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES, GET_SHORTEST_PATH
 import random
 import graph
-from collections import deque
 
 # Time Complexity: O(mlogn)
 def MST_PRIM(G, W):
@@ -118,11 +117,54 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
 G, W = GENERATE_GRAPH_WITH_WEIGHTS(10, 16)
 G.printAndWeights(W)
 MST = MST_PRIM(G, W)
+print("MST graph:")
 MST.printAndWeights(W)
 
-# REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})
+# find an available edge in a graph
+V = set(range(0, G.numVertices))
+newEdge = None
+fullV = set()
+while len(fullV) < len(V):
+    v = random.choice(list(V-fullV))
+    availableEdges = GET_AVAILABLE_EDGES(G, v, V)
+    if not availableEdges:
+        fullV.add(v)
+        if fullV == set(V):
+            break
+        continue
+    else:
+        newEdge = random.choice(list(availableEdges))
+        break
 
-# find vertex whose deg[v] < n-1, which means there could be another edge (u, v)
-# go over the weights of edges (Ai, v)
-# for 3.2. you add an edge (u,v) with weight > max of deg[v]
-# for 3.3. you add an edge (u,v) with weight = min - 1, of deg[v]
+if len(fullV) >= len(V):
+    raise Exception("The graph has no available edges to add.")
+
+# path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
+# flag = False
+# for e in path:
+#     if not flag:
+#         print(f"({chr(e[1] + 97)}, {chr(e[0] + 97)}), ", end="")
+#         flag = False
+#     else:
+#         print(f"({chr(e[0] + 97)}, {chr(e[1] + 97)}), ", end="")
+#         flag = True
+# max = float('-inf')
+# for e in path:
+#     weight = W.get((e[0], e[1]), W.get((e[1], e[0])))
+#     if weight > max:
+#         max = weight
+
+# for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
+print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)})", max + 1)
+Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, max + 1)
+updatedW = W.copy()
+updatedW[newEdge] = max + 1
+Q3_NO.printAndWeights(updatedW)
+# for change the MST choose the weight for edge to be max minus 1 (less than max)
+print("new edge that has effect on the MST:", newEdge, max - 1)
+Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, max - 1)
+updatedW = W.copy()
+updatedW[newEdge] = max - 1
+Q3_YES.printAndWeights(updatedW)
+
+# REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})
