@@ -36,18 +36,13 @@ def MST_PRIM(G, W):
 # We want to extract from the circle the edge with the highest weight, in order to get the new MST
 def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     # 1. init
-    # Time Complexity: O(1)
     v = newEdge[0]
     u = newEdge[1]
 
     # 2. get the shortest path between u and v
-    # Time Complexity: O(n)
-    # explanation: m = n-1 in MST, therefore the time complexity = O(n + m) = O(2n - 1) = O(n)
     shortestPath = GET_SHORTEST_PATH(MST, u, v)
 
     # 3. find the edge with the highest weight in the circle 
-    # Time Complexity: O(n)
-    # explanation: O(|shortestPath|) = O(n-1) = O(n)
     max = w
     edgeToRemove = newEdge
     for edge in shortestPath:
@@ -57,17 +52,15 @@ def Q2_FIND_NEW_MST(MST, W, newEdge, w):
             edgeToRemove = edge
 
     # 4. extract the edge with the highest weight in the circle
-    # Time Complexity: O(1)
-    # if edge to replace is the new edge then no change made to mst
     if edgeToRemove == (u, v) or edgeToRemove == (v, u):
         return MST
     
-    # else we update the edge's set of the MST with those we found before
+    # 5. modify the new mst
     newMST = copy.deepcopy(MST)
     newMST['E'].add(newEdge)
     newMST['E'].remove(edgeToRemove)
 
-    # 5. return the new MST
+    # 6. return the new MST
     return newMST
 
 # Time Complexity: O(n^2)
