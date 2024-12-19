@@ -65,7 +65,7 @@ class AdjList:
     
     def BFS(self, s):
         # init
-        n = len(self.adjList)
+        n = len(self.numVertices)
         visited = [False] * n
         d = [float('inf')] * n
         p = [None] * n
@@ -77,7 +77,7 @@ class AdjList:
 
         while len(Q) != 0:
             u = Q.popleft()
-            node = self.adjList[u]
+            node = self[u]
             while node:
                 v = node.value
                 if not visited[v]:

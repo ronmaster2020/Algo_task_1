@@ -62,7 +62,8 @@ def GET_AVAILABLE_EDGES(G, v, V):
 # O(n + m)
 def GET_SHORTEST_PATH(G, u, v):
     # O(n + m)
-    _,P = G.BFS(v)
+    Adj = MAKE_ADJ(G)
+    _,P = Adj.BFS(v)
     if P[u] == None:
         return None
     
