@@ -40,10 +40,10 @@ def GENERATE_WEIGHTS(m):
     return weights
 
 # O(n)
-def GET_AVAILABLE_EDGES(G, v, V):
+def GET_AVAILABLE_EDGES(Adj, v, V):
     # O(1)
     neighbors = set()
-    node = G.adjList[v]
+    node = Adj[v]
     # O(n-1) = O(n)
     while node:
         neighbors.add(node.value)
