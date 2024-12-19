@@ -62,6 +62,7 @@ class AdjList:
                 print(f" -> {neighborLabel} (w:{weight})", end="")
                 temp = temp.next
             print()
+        print()
     
     def BFS(self, s):
         # init
