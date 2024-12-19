@@ -2,14 +2,13 @@ from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_GRAPH_FROM_PARENTS_LIST, GENER
 import random
 import graph
 
-# Time Complexity: O(mlogn)
+# Time Complexity: O((n+m)*logn) = O(m*logn) (because the graph is connected so m >= n-1)
 def MST_PRIM(G, W):
-    # init - O(n + m)
+    # init
     V = G['V']
     n = len(V)
-    Q, key, P = PRIM_INIT(n)
-    Adj = MAKE_ADJ(G)
-
+    Q, key, P = PRIM_INIT(n) # O(n*logn)
+    Adj = MAKE_ADJ(G) # O(n + m)
 
     while not Q.isEmpty():
         u = EXTRACT_MIN(Q)
