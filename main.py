@@ -76,58 +76,47 @@ def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     # 5. return the updated MST
     return updatedMST
 
+# Time Complexity: O(n^2)
 # the Graph must be connected, and undirected (לא מכוון וקשיר)
 def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
+    # init - O(n^2)
     n = random.randint(minN, maxN)
     maxM = random.randint(n-1, n*(n-1)//2)
     weightsList = GENERATE_WEIGHTS(maxM)
-    W = graph.WeightsFucntion()
+    assert len(weightsList) >= maxM, "Not enough weights for the edges"
 
-    # generate vertices - O(n)
+    W = graph.WeightsFucntion()
     V = list(range(n))
     E = set()
-    Adj = graph.AdjList(n)
+    allEdges = set([(i, j) for i in range(n) for j in range(i + 1, n)])
+    totalEdgesAdded = 0
 
-    # time complexity: O(n)
-    # firstly we generate a connected graph with n-1 edges
+    # 1. we generate a connected graph with n-1 edges
+    # time complexity: O(n^2)
     connected = [random.choice(V)]
-    remaining = set(V) - set(connected)
+    remaining = list(set(V) - set(connected))
 
     while remaining:
+        v = random.choice(remaining)
         u = random.choice(connected)
-        v = random.choice(list(remaining))
-        Adj.addEdge(u, v)
-        E.add((u, v))
-        W.addEdge(u, v, weightsList.pop())
+        newEdge = (u, v)
+        if v < u:
+            newEdge = (v, u)
+        E.add(newEdge)
+        W.addEdge(*newEdge, weightsList.pop())
+        allEdges.remove(newEdge)
         connected.append(v)
         remaining.remove(v)
+        totalEdgesAdded += 1
 
-    # add the rest edges randomly (up to maxM)
-    totalEdgesAdded = n - 1
-    fullV = set()
-    while totalEdgesAdded < maxM:
-        availableV = set(V) - fullV
-        v = random.choice(list(availableV))
+    # 2. add the rest edges - O(n^2)
+    numberEdgesToAdd = maxM - totalEdgesAdded
+    for _ in range(numberEdgesToAdd):
+        u, v = allEdges.pop()
+        E.add((u, v))
+        W.addEdge(u, v, weightsList.pop())
 
-        # find list of available edges to connect to vertex v
-        availableEdges = GET_AVAILABLE_EDGES(Adj, v, V)
-        if not availableEdges:
-            fullV.add(v)
-            if fullV == set(V):
-                break
-            continue
-
-        # add randomely availabe edges
-        numEdgesToAdd = random.randint(1, min(len(availableEdges), maxM - totalEdgesAdded))
-        for _ in range(numEdgesToAdd):
-            e = random.choice(list(availableEdges))
-            Adj.addEdge(*e) # unpack the tuple e
-            E.add(e)
-            W.addEdge(e[0], e[1], weightsList.pop())
-            availableEdges.remove(e)
-            totalEdgesAdded += 1
-            if totalEdgesAdded == maxM:
-                break
+    # and finally return the graph, and the weights fucntion
     G = {
         'V': V,
         'E': E
@@ -144,8 +133,7 @@ MST_Adj = MAKE_ADJ(MST)
 MST_Adj.printAndWeights(W)
 print()
 
-# # find an available edge in a graph
-# V = set(range(0, G.numVertices))
+# find an available edge in a graph
 # newEdge = None
 # fullV = set()
 # while len(fullV) < len(V):
