@@ -10,18 +10,18 @@ class AdjList:
         self.adjList = [None] * numVertices
         self.numVertices = numVertices
 
-    def addEdge(self, src, dest):
-        newNode = Node(dest)
-        newNode.next = self.adjList[src]
-        self.adjList[src] = newNode
+    def addEdge(self, u, v):
+        newNode = Node(v)
+        newNode.next = self.adjList[u]
+        self.adjList[u] = newNode
 
-        newNode = Node(src)
-        newNode.next = self.adjList[dest]
-        self.adjList[dest] = newNode
+        newNode = Node(u)
+        newNode.next = self.adjList[v]
+        self.adjList[v] = newNode
 
-    def removeEdge(self, src, dest):
-        self.adjList[src] = self._removeNode(self.adjList[src], dest)
-        self.adjList[dest] = self._removeNode(self.adjList[dest], src)
+    def removeEdge(self, u, v):
+        self.adjList[u] = self._removeNode(self.adjList[u], v)
+        self.adjList[v] = self._removeNode(self.adjList[v], u)
         
     def _removeNode(self, head, value):
         # Helper function to remove a node with the given value from the linked list
@@ -34,6 +34,9 @@ class AdjList:
                 break
             prev, curr = curr, curr.next
         return dummy.next
+    
+    def getNeighbors(self, v):
+        return self.adjList[v]
 
     def print(self):
         print("Graph is represented by Adjacency List:")
