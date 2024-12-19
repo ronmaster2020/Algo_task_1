@@ -35,7 +35,7 @@ class AdjList:
             prev, curr = curr, curr.next
         return dummy.next
     
-    def getNeighbors(self, v):
+    def __getitem__(self, v):
         return self.adjList[v]
 
     def print(self):
