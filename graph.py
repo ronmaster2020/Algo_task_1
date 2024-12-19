@@ -65,7 +65,7 @@ class AdjList:
     
     def BFS(self, s):
         # init
-        n = len(self.numVertices)
+        n = self.numVertices
         visited = [False] * n
         d = [float('inf')] * n
         p = [None] * n
