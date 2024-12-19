@@ -31,11 +31,11 @@ def MST_PRIM(G, W):
 # explanation:
 # (u,v) in a MST completes a circle with the shortest path from u to v, therefore
 # We want to extract from the circle the edge with the highest weight, in order to get the new MST
-def Q2_FIND_NEW_MST(MST, W, e, w):
+def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     # 1. init
     # Time Complexity: O(1)
-    v = e[0]
-    u = e[1]
+    v = newEdge[0]
+    u = newEdge[1]
 
     # 2. get the shortest path between u and v
     # Time Complexity: O(n)
@@ -46,17 +46,19 @@ def Q2_FIND_NEW_MST(MST, W, e, w):
     # Time Complexity: O(n)
     # explanation: O(|shortestPath|) = O(n-1) = O(n)
     max = w
-    edge = e
+    edge = newEdge
     for e in shortestPath:
-        weight = W.get((e[0], e[1]), W.get(e[0], e[1]))
+        weight = W.get((e[0], e[1]), W.get((e[1], e[0])))
         if weight > max:
             max = weight
             edge = e
 
     # 4. extract the edge with the highest weight in the circle
     # Time Complexity: O(deg(edge[0]) + deg(edge[1])) less or equal O(n)
-    if (edge == (u, v)):
+    if edge == (u, v) or edge == (v, u):
         return MST
+    else:
+        print(f"THE CHOSEN: ({chr(edge[1] + 97)}, {chr(edge[0] + 97)})")
     MST.addEdge(v, u)     # O(1)
     MST.removeEdge(edge[0], edge[1])    # O(deg(edge[0]) + deg(edge[1]))
 
@@ -114,11 +116,13 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
                 return Adj, W
     return Adj, W
 
-G, W = GENERATE_GRAPH_WITH_WEIGHTS(10, 16)
+G, W = GENERATE_GRAPH_WITH_WEIGHTS(3, 10)
 G.printAndWeights(W)
+print()
 MST = MST_PRIM(G, W)
 print("MST graph:")
 MST.printAndWeights(W)
+print()
 
 # find an available edge in a graph
 V = set(range(0, G.numVertices))
@@ -141,33 +145,22 @@ if len(fullV) >= len(V):
 
 # get the shortest path
 path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
-# print the shortest path
-flag = False
-for e in path:
-    if not flag:
-        print(f"({chr(e[1] + 97)}, {chr(e[0] + 97)}), ", end="")
-        flag = False
-    else:
-        print(f"({chr(e[0] + 97)}, {chr(e[1] + 97)}), ", end="")
-        flag = True
+
 # find the max in the shortest path
-max = float('-inf')
-for e in path:
-    weight = W.get((e[0], e[1]), W.get((e[1], e[0])))
-    if weight > max:
-        max = weight
+maxWeight = max(W.get((e[0], e[1]), W.get((e[1], e[0]))) for e in path)
 
 # for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
-print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)})", max + 1)
-Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, max + 1)
+print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight + 1)
+Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight + 1)
 updatedW = W.copy()
-updatedW[newEdge] = max + 1
+updatedW[newEdge] = maxWeight + 1
 Q3_NO.printAndWeights(updatedW)
+print()
 # for change the MST choose the weight for edge to be max minus 1 (less than max)
-print("new edge that has effect on the MST:", newEdge, max - 1)
-Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, max - 1)
+print(f"new edge that has effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight - 1)
+Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight - 1)
 updatedW = W.copy()
-updatedW[newEdge] = max - 1
+updatedW[newEdge] = maxWeight - 1
 Q3_YES.printAndWeights(updatedW)
 
 # REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})
