@@ -29,7 +29,7 @@ def MST_PRIM(G, W):
     MST = BUILD_GRAPH_FROM_PARENTS_LIST(P, n)
     return MST
 
-# Time Complexity: O(n) (= 3O(n) + O(1))
+# Time Complexity: O(n)
 # explanation:
 # (u,v) in a MST completes a circle with the shortest path from u to v, therefore
 # We want to extract from the circle the edge with the highest weight, in order to get the new MST
@@ -48,24 +48,32 @@ def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     # Time Complexity: O(n)
     # explanation: O(|shortestPath|) = O(n-1) = O(n)
     max = w
-    edge = newEdge
-    for e in shortestPath:
-        weight = W(e[0], e[1])
+    edgeToRemove = newEdge
+    for edge in shortestPath:
+        weight = W(edge[0], edge[1])
         if weight > max:
             max = weight
-            edge = e
+            edgeToRemove = edge
 
     # 4. extract the edge with the highest weight in the circle
-    # Time Complexity: O(deg(edge[0]) + deg(edge[1])) less or equal O(n)
-    if edge == (u, v) or edge == (v, u):
+    # Time Complexity: O(1)
+    # if edge to replace is the new edge then no change made to mst
+    if edgeToRemove == (u, v) or edgeToRemove == (v, u):
         return MST
-    else:
-        print(f"THE CHOSEN: ({chr(edge[1] + 97)}, {chr(edge[0] + 97)})")
-    MST.addEdge(v, u)     # O(1)
-    MST.removeEdge(edge[0], edge[1])    # O(deg(edge[0]) + deg(edge[1]))
+    
+    # else we update the edge's set of the MST with those we found before
+    V = MST['V']
+    E = MST['E']
+    
+    updatedE = E.add(newEdge)
+    updatedE = E.remove(edgeToRemove)
+    updatedMST = {
+        'V': V,
+        'E': updatedE
+    }
 
-    # 5. return the new MST
-    return MST
+    # 5. return the updated MST
+    return updatedMST
 
 # the Graph must be connected, and undirected (לא מכוון וקשיר)
 def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
