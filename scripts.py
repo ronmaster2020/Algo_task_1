@@ -73,3 +73,23 @@ def GET_SHORTEST_PATH(G, u, v):
     # O(n)
     path.reverse()
     return path
+
+# O(n + m)
+def MAKE_ADJ(G):
+    E = G['E']
+    V = G['V']
+
+    m = len(E)
+    n = len(V)
+    maxE = (n * (n-1)) // 2
+    if m > maxE:
+        raise ValueError("invalid amount of edges (|E| > |V|*(|V|-1)/2)")
+
+    if not V: return None
+
+    Adj = graph.AdjList(len(V))
+    for edge in E:
+        u = edge[0]
+        v = edge[1]
+        Adj.addEdge(u, v)
+    return Adj
