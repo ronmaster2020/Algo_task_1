@@ -1,4 +1,4 @@
-from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES, GET_SHORTEST_PATH, MAKE_ADJ
+from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_GRAPH_FROM_PARENTS_LIST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES, GET_SHORTEST_PATH, MAKE_ADJ
 import random
 import graph
 
@@ -6,9 +6,7 @@ import graph
 def MST_PRIM(G, W):
     # init - O(n + m)
     V = G['V']
-    E = G['E']
     n = len(V)
-    m = len(E)
     Q, key, P = PRIM_INIT(n)
     Adj = MAKE_ADJ(G)
 
@@ -29,7 +27,7 @@ def MST_PRIM(G, W):
 
             node = node.next
 
-    MST = BUILD_MST(P, n)
+    MST = BUILD_GRAPH_FROM_PARENTS_LIST(P, n)
     return MST
 
 # Time Complexity: O(n) (= 3O(n) + O(1))
