@@ -72,7 +72,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
 
     # generate vertices - O(n)
     V = list(range(n))
-    G = graph.AdjList(n)
+    Adj = graph.AdjList(n)
 
     # time complexity: O(n)
     # firstly we generate a connected graph with n-1 edges
@@ -82,7 +82,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
     while remaining:
         u = random.choice(connected)
         v = random.choice(list(remaining))
-        G.addEdge(u, v)
+        Adj.addEdge(u, v)
         W[(u, v)] = weightsList.pop()
         connected.append(v)
         remaining.remove(v)
@@ -95,7 +95,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         v = random.choice(list(availableV))
 
         # find list of available edges to connect to vertex v
-        availableEdges = GET_AVAILABLE_EDGES(G, v, V)
+        availableEdges = GET_AVAILABLE_EDGES(Adj, v, V)
         if not availableEdges:
             fullV.add(v)
             if fullV == set(V):
@@ -106,13 +106,13 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         numEdgesToAdd = random.randint(1, min(len(availableEdges), maxM - totalEdgesAdded))
         for _ in range(numEdgesToAdd):
             e = random.choice(list(availableEdges))
-            G.addEdge(*e) # unpack the tuple e
+            Adj.addEdge(*e) # unpack the tuple e
             W[e] = weightsList.pop()
             availableEdges.remove(e)
             totalEdgesAdded += 1
             if totalEdgesAdded == maxM:
-                return G, W
-    return G, W
+                return Adj, W
+    return Adj, W
 
 G, W = GENERATE_GRAPH_WITH_WEIGHTS(10, 16)
 G.printAndWeights(W)
@@ -139,20 +139,23 @@ while len(fullV) < len(V):
 if len(fullV) >= len(V):
     raise Exception("The graph has no available edges to add.")
 
-# path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
-# flag = False
-# for e in path:
-#     if not flag:
-#         print(f"({chr(e[1] + 97)}, {chr(e[0] + 97)}), ", end="")
-#         flag = False
-#     else:
-#         print(f"({chr(e[0] + 97)}, {chr(e[1] + 97)}), ", end="")
-#         flag = True
-# max = float('-inf')
-# for e in path:
-#     weight = W.get((e[0], e[1]), W.get((e[1], e[0])))
-#     if weight > max:
-#         max = weight
+# get the shortest path
+path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
+# print the shortest path
+flag = False
+for e in path:
+    if not flag:
+        print(f"({chr(e[1] + 97)}, {chr(e[0] + 97)}), ", end="")
+        flag = False
+    else:
+        print(f"({chr(e[0] + 97)}, {chr(e[1] + 97)}), ", end="")
+        flag = True
+# find the max in the shortest path
+max = float('-inf')
+for e in path:
+    weight = W.get((e[0], e[1]), W.get((e[1], e[0])))
+    if weight > max:
+        max = weight
 
 # for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
 print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)})", max + 1)
