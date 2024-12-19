@@ -1,17 +1,22 @@
-from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES, GET_SHORTEST_PATH
+from scripts import PRIM_INIT, EXTRACT_MIN, BUILD_MST, GENERATE_WEIGHTS, GET_AVAILABLE_EDGES, GET_SHORTEST_PATH, MAKE_ADJ
 import random
 import graph
 
 # Time Complexity: O(mlogn)
 def MST_PRIM(G, W):
-    n = G.numVertices
-    Q, key, P= PRIM_INIT(n)
+    # init - O(n + m)
+    V = G['V']
+    E = G['E']
+    n = len(V)
+    m = len(E)
+    Q, key, P = PRIM_INIT(n)
+    Adj = MAKE_ADJ(G)
 
 
     while not Q.isEmpty():
         u = EXTRACT_MIN(Q)
 
-        node = G.adjList[u]
+        node = Adj[u]
         while node:
             v = node.value
             # the graph is undirected (לא מכוון), so we check for both orders
