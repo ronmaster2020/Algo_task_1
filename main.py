@@ -85,6 +85,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
 
     # generate vertices - O(n)
     V = list(range(n))
+    E = set()
     Adj = graph.AdjList(n)
 
     # time complexity: O(n)
@@ -96,6 +97,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         u = random.choice(connected)
         v = random.choice(list(remaining))
         Adj.addEdge(u, v)
+        E.add((u, v))
         W.addEdge(u, v, weightsList.pop())
         connected.append(v)
         remaining.remove(v)
@@ -120,58 +122,65 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         for _ in range(numEdgesToAdd):
             e = random.choice(list(availableEdges))
             Adj.addEdge(*e) # unpack the tuple e
+            E.add(e)
             W.addEdge(e[0], e[1], weightsList.pop())
             availableEdges.remove(e)
             totalEdgesAdded += 1
             if totalEdgesAdded == maxM:
-                return Adj, W
-    return Adj, W
+                break
+    G = {
+        'V': V,
+        'E': E
+    }
+    return G, W
 
 G, W = GENERATE_GRAPH_WITH_WEIGHTS(3, 10)
-G.printAndWeights(W)
+Adj = MAKE_ADJ(G)
+Adj.printAndWeights(W)
 print()
 MST = MST_PRIM(G, W)
 print("MST graph:")
-MST.printAndWeights(W)
+MST_Adj = MAKE_ADJ(MST)
+MST_Adj.printAndWeights(W)
 print()
 
-# find an available edge in a graph
-V = set(range(0, G.numVertices))
-newEdge = None
-fullV = set()
-while len(fullV) < len(V):
-    v = random.choice(list(V-fullV))
-    availableEdges = GET_AVAILABLE_EDGES(G, v, V)
-    if not availableEdges:
-        fullV.add(v)
-        if fullV == set(V):
-            break
-        continue
-    else:
-        newEdge = random.choice(list(availableEdges))
-        break
+# # find an available edge in a graph
+# V = set(range(0, G.numVertices))
+# newEdge = None
+# fullV = set()
+# while len(fullV) < len(V):
+#     v = random.choice(list(V-fullV))
+#     availableEdges = GET_AVAILABLE_EDGES(G, v, V)
+#     if not availableEdges:
+#         fullV.add(v)
+#         if fullV == set(V):
+#             break
+#         continue
+#     else:
+#         newEdge = random.choice(list(availableEdges))
+#         break
 
-if len(fullV) >= len(V):
-    raise Exception("The graph has no available edges to add.")
+# if len(fullV) >= len(V):
+#     raise Exception("The graph has no available edges to add.")
 
-# get the shortest path
-path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
+# # get the shortest path
+# path = GET_SHORTEST_PATH(MST, newEdge[0], newEdge[1])
 
-# find the max in the shortest path
-maxWeight = max(W(e[0], e[1]) for e in path)
+# # find the max in the shortest path
+# maxWeight = max(W(e[0], e[1]) for e in path)
 
-# for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
-print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight + 1)
-Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight + 1)
-updatedW = W
-updatedW.addEdge(newEdge[0], newEdge[1], maxWeight + 1)
-Q3_NO.printAndWeights(updatedW)
-print()
-# for change the MST choose the weight for edge to be max minus 1 (less than max)
-print(f"new edge that has effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight - 1)
-Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight - 1)
-updatedW = W.copy()
-updatedW.addEdge(newEdge[0], newEdge[1], maxWeight - 1)
-Q3_YES.printAndWeights(updatedW)
+# # for doesn't change the MST choose the weight for edge to be max plus 1 (more than max)
+# print(f"new edge that has no effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight + 1)
+# Q3_NO = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight + 1)
+# updatedW = W
+# updatedW.addEdge(newEdge[0], newEdge[1], maxWeight + 1)
+# Q3_NO.printAndWeights(updatedW)
+# print()
+# # for change the MST choose the weight for edge to be max minus 1 (less than max)
+# print(f"new edge that has effect on the MST: ({chr(newEdge[0] + 97)}, {chr(newEdge[1] + 97)}) w:", maxWeight - 1)
+# Q3_YES = Q2_FIND_NEW_MST(MST, W, newEdge, maxWeight - 1)
+# updatedW = W.copy()
+# updatedW.addEdge(newEdge[0], newEdge[1], maxWeight - 1)
+# Q3_YES.printAndWeights(updatedW)
 
-# REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})
+# # REPLACE ALL G with adj, and the G should be G=('V':[0,...,n],'E':{...})

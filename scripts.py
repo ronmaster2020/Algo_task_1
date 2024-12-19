@@ -25,7 +25,7 @@ def EXTRACT_MIN(Q):
 def BUILD_GRAPH_FROM_PARENTS_LIST(P, n):
     V = set(list(range(n)))
     E = set()
-    for v in P:
+    for v in range(n):
         if P[v] is not None:
             E.add((P[v], v))
     G = {
