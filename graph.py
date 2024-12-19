@@ -141,3 +141,20 @@ class MinHeap:
 # decreaseKey - O(logn)
 # isEmpty - O(1)
 # exists - O(1)
+
+class WeightsFucntion:
+    def __init__(self):
+        self.W = {}
+    
+    def addEdge(self, u, v, w):
+        self.W[(u, v)] = w
+        self.W[(v, u)] = w
+    
+    def removeEdge(self, u, v):
+        if (u, v) in self.W:
+            del self.W[(u, v)]
+        if (v, u) in self.W:
+            del self.W[(v, u)]
+    
+    def __call__(self, u, v):
+        return self.W.get((u, v), self.W.get((v, u)))
