@@ -22,12 +22,17 @@ def EXTRACT_MIN(Q):
     return (Q.pop())[1]
 
 # O(n)
-def BUILD_MST(P, n):
-    MST = graph.AdjList(n)
-    for v in range(0, n):
+def BUILD_GRAPH_FROM_PARENTS_LIST(P, n):
+    V = set(list(range(n)))
+    E = set()
+    for v in P:
         if P[v] is not None:
-            MST.addEdge(P[v], v)
-    return MST
+            E.add((P[v], v))
+    G = {
+        'V': V,
+        'E': E
+    }
+    return G
 
 # O(m)
 def GENERATE_WEIGHTS(m):
