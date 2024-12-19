@@ -51,7 +51,7 @@ def Q2_FIND_NEW_MST(MST, W, newEdge, w):
     max = w
     edgeToRemove = newEdge
     for edge in shortestPath:
-        weight = W(edge[0], edge[1])
+        weight = W(*edge)
         if weight > max:
             max = weight
             edgeToRemove = edge
@@ -103,7 +103,7 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
         if v < u:
             newEdge = (v, u)
         E.add(newEdge)
-        W.addEdge(*newEdge, weightsList.pop())
+        W.addEdge(newEdge, weightsList.pop())
         allEdges.remove(newEdge)
         connected.append(v)
         remaining.remove(v)
@@ -112,9 +112,9 @@ def GENERATE_GRAPH_WITH_WEIGHTS(minN, maxN):
     # 2. add the rest edges - O(n^2)
     numberEdgesToAdd = maxM - totalEdgesAdded
     for _ in range(numberEdgesToAdd):
-        u, v = allEdges.pop()
-        E.add((u, v))
-        W.addEdge(u, v, weightsList.pop())
+        newEdge = allEdges.pop()
+        E.add(newEdge)
+        W.addEdge(newEdge, weightsList.pop())
 
     # and finally return the graph, and the weights fucntion
     G = {
